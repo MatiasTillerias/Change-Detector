@@ -1,5 +1,7 @@
-import sqlite3
 import re
+import hashlib
+import sqlite3
+from db import *
 
 def get_file_path():
     a = open("/etc/change-detector/change-detector.conf", "r+")
@@ -12,6 +14,18 @@ def get_file_path():
             files.append(filepath[0])
         except:
             pass
-    print(files)
+    return files
+def get_hash(files):
+    hashFinal = []
+    for i in files:
+        HashFile = hashlib.md5(open(i.encode("utf-8"),"rb").read()).hexdigest()
+        hashFinal.append(HashFile)
+    return hashFinal
 def main():
-        get_file_path()    
+    con = sqlite3.connect("/etc/change-detector/change-detector.db")
+    db = con.cursor()
+    files = get_file_path()
+    hashs = get_hash(files)
+    for i in range(len(files)):
+        insertFile( con , db , files[i] , hashs[i] )
+

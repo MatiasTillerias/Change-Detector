@@ -1,7 +1,10 @@
 import sqlite3
 import os
 
-os.mkdir("/etc/change-detector/")
+try:
+    os.mkdir("/etc/change-detector/")
+except:
+    pass
 
 conn = sqlite3.connect('/etc/change-detector/change-detector.db')
 c = conn.cursor()
